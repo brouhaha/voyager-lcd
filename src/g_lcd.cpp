@@ -3,9 +3,18 @@
 
 #include <iostream>
 
+#include <QByteArray>
+#include <QFontDatabase>
+#include <QGraphicsLinearLayout>
+
+#include "Aileron-Bold.h"
 #include "g_lcd.h"
 
-#include <QGraphicsLinearLayout>
+
+static const std::string font_name = "Aileron-Bold";
+
+static QByteArray Aileron_Bold_bytes((const char *) Aileron_Bold_otf, sizeof(Aileron_Bold_otf));
+
 
 G_LCD::G_LCD(QGraphicsItem *parent,
 	     Qt::WindowFlags wFlags):
@@ -14,6 +23,8 @@ G_LCD::G_LCD(QGraphicsItem *parent,
   annunciators_layout(new QGraphicsLinearLayout(Qt::Horizontal)),
   vbox_layout(new QGraphicsLinearLayout(Qt::Vertical))
 {
+  int font_id = QFontDatabase::addApplicationFontFromData(Aileron_Bold_bytes);
+
   setLayout(vbox_layout);
 
   // digits are numbered 0 to 9 from LSB (right) to MSB (left), plus a partial digit 10 for negative sign
@@ -54,7 +65,11 @@ G_LCD::G_LCD(QGraphicsItem *parent,
     }
   }
 
-  annunciators_layout->addStretch(LCD::ANN_MAX - 1);
+  if (false)
+  {
+    // this also isn't grat
+    annunciators_layout->addStretch(LCD::ANN_MAX - 1);
+  }
 
   vbox_layout->addItem(digits_layout);
   vbox_layout->addItem(annunciators_layout);

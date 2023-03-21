@@ -4,7 +4,6 @@
 #include <iostream>
 
 #include <QColor>
-#include <QFont>
 
 #include "g_lcd_segment.h"
 

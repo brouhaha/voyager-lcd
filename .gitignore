@@ -3,4 +3,5 @@ moc_*.cc
 *.o
 *~
 .sconsign.dblite
+src/Aileron-Bold.[ch]
 __pycache__
