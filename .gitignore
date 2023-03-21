@@ -1,0 +1,6 @@
+voyager-lcd
+moc_*.cc
+*.o
+*~
+.sconsign.dblite
+__pycache__

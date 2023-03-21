@@ -1,0 +1,28 @@
+# Copyright 2023 Eric Smith
+# SPDX-License-Identifier: GPL-3.0-only
+
+env = Environment(CXXFLAGS = ['-g', '--std=c++20'])
+
+env.PrependENVPath('PATH', '/usr/lib64/qt6/libexec')
+env.Tool('qt6', toolpath = '.')
+
+env.EnableQt6Modules(['QtCore',
+                      'QtGui',
+		      'QtWidgets'])
+
+SOURCES = ['main.cpp',
+           'main_window.cpp',
+	   'central_widget.cpp',
+	   'g_hex_line_edit.cpp',
+           'g_lcd.cpp',
+	   'g_lcd_annunciator.cpp',
+           'g_lcd_digit.cpp',
+           'g_lcd_segment.cpp',
+           'g_lcd_view.cpp',
+	   'g_registers.cpp',
+
+	   'lcd.cpp',
+	   'lcd_registers.cpp',
+	   'lcd_mapper.cpp']
+
+env.Program('voyager-lcd', SOURCES)
