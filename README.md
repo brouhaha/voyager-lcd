@@ -31,10 +31,9 @@ Python 3.11, and SCons 4.4.1
 
 To build:
 
-- `cd src`
 - `scons`
 
-The resulting executable is named voyager-lcd. The executable may be
+The resulting executable will be build/native/voyager-lcd. The executable may be
 installed simply by copying it into any desired directory.
 
 ## License

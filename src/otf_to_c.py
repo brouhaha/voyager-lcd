@@ -12,7 +12,7 @@ def chunk(it, size):
     return iter(lambda: tuple(itertools.islice(it, size)), ())
 
 def otf_file_to_h_file(otf_fn, h_fn, t = 'uint8_t'):
-    array_name = otf_fn.replace('-', '_').replace('.', '_')
+    array_name = os.path.basename(otf_fn).replace('-', '_').replace('.', '_')
     with open(otf_fn, 'rb') as f:
         data = f.read()
     with open(h_fn, 'w') as hf:
@@ -21,8 +21,9 @@ def otf_file_to_h_file(otf_fn, h_fn, t = 'uint8_t'):
         hf_print(f'extern const {t} {array_name}[{len(data)}];')
                      
 def otf_file_to_c_file(otf_fn, c_fn, t = 'uint8_t'):
-    h_fn = os.path.splitext(c_fn)[0] + '.h'
-    array_name = otf_fn.replace('-', '_').replace('.', '_')
+    print(f'  otf_file_to_c_file("{otf_fn}", "{c_fn}", t)')
+    h_fn = os.path.basename(c_fn).replace('.c', '.h')
+    array_name = os.path.basename(otf_fn).replace('-', '_').replace('.', '_')
     with open(otf_fn, 'rb') as f:
         data = f.read()
     with open(c_fn, 'w') as cf:
@@ -37,11 +38,11 @@ def otf_file_to_c_file(otf_fn, c_fn, t = 'uint8_t'):
                      
 def otf_to_h_action(target, source, env):
     print(f'  otf_to_h_action, {target=}, {source=}')
-    otf_file_to_h_file(source[0].name, target[0].name)
+    otf_file_to_h_file(source[0].path, target[0].path)
 
 def otf_to_c_action(target, source, env):
     print(f'  otf_to_c_action, {target=}, {source=}')
-    otf_file_to_c_file(source[0].name, target[0].name)
+    otf_file_to_c_file(source[0].path, target[0].path)
 
 otf_to_h_builder = SCons.Builder.Builder(action = otf_to_h_action,
                                          suffix = '.h',
