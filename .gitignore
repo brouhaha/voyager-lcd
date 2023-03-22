@@ -1,7 +1,5 @@
-voyager-lcd
-moc_*.cc
-*.o
 *~
 .sconsign.dblite
-src/Aileron-Bold.[ch]
+voyager-lcd.conf
+build
 __pycache__

@@ -25,15 +25,15 @@ control register values are displayed in hexadecimal.
 
 ## Building from source
 
-The program requires C++20 , Qt 6, Python 3, and SCons 4. It has been
-(only slightly) tested on Fedora 37 Linux with GCC 12.2.1, Qt 6.4.1,
-Python 3.11, and SCons 4.4.1
+The program builds on Linux or Posix systems, and requires C++20 , Qt
+6, Python 3, and SCons 4. It has been (only slightly) tested on Fedora
+37 Linux with GCC 12.2.1, Qt 6.4.1, Python 3.11, and SCons 4.4.1.
 
 To build:
 
 - `scons`
 
-The resulting executable will be build/native/voyager-lcd. The executable may be
+The resulting executable will be build/posix/voyager-lcd. The executable may be
 installed simply by copying it into any desired directory.
 
 ## License
