@@ -213,7 +213,7 @@ class _Automoc:
             print("scons: qt6: no header for '%s'." % (str(cpp)))
         if h and self.qo_search.search(h_contents):
             # h file with the Q_OBJECT macro found -> add moc_cpp
-            moc_cpp = env.Moc5(h)
+            moc_cpp = env.Moc6(h)
             if moc_options['debug']:
                 print("scons: qt6: found Q_OBJECT macro in '%s', moc'ing to '%s'" % (str(h), str(moc_cpp)))
             
@@ -232,7 +232,7 @@ class _Automoc:
         if cpp and self.qo_search.search(cpp_contents):
             # cpp file with Q_OBJECT macro found -> add moc
             # (to be included in cpp)
-            moc = env.Moc5(cpp)
+            moc = env.Moc6(cpp)
             env.Ignore(moc, moc)
             if moc_options['debug']:
                 print("scons: qt6: found Q_OBJECT macro in '%s', moc'ing to '%s'" % (str(cpp), str(moc)))
@@ -281,7 +281,7 @@ class _Automoc:
                     print("scons: qt6: no header for '%s'." % (str(cpp)))
                 if h and self.qo_search.search(h_contents):
                     # h file with the Q_OBJECT macro found -> add moc_cpp
-                    moc_cpp = env.XMoc5(h)
+                    moc_cpp = env.XMoc6(h)
                     env.Ignore(moc_cpp, moc_cpp)
                     added = True
                     # Removing file from list of sources, because it is not to be
@@ -300,7 +300,7 @@ class _Automoc:
             if cpp and re.search(inc_cxx_moc, cpp_contents):
                 # cpp file with #include directive for a MOCed cxx file found -> add moc
                 if self.qo_search.search(cpp_contents):
-                    moc = env.XMoc5(target=cxx_moc, source=cpp)
+                    moc = env.XMoc6(target=cxx_moc, source=cpp)
                     env.Ignore(moc, moc)
                     added = True
                     if moc_options['debug']:
@@ -328,10 +328,10 @@ class _Automoc:
         # The following is kind of hacky to get builders working properly (FIXME)
         objBuilderEnv = self.objBuilder.env
         self.objBuilder.env = env
-        mocBuilderEnv = env.Moc5.env
-        env.Moc5.env = env
-        xMocBuilderEnv = env.XMoc5.env
-        env.XMoc5.env = env
+        mocBuilderEnv = env.Moc6.env
+        env.Moc6.env = env
+        xMocBuilderEnv = env.XMoc6.env
+        env.XMoc6.env = env
         
         # make a deep copy for the result; MocH objects will be appended
         out_sources = source[:]
@@ -372,8 +372,8 @@ class _Automoc:
 
         # restore the original env attributes (FIXME)
         self.objBuilder.env = objBuilderEnv
-        env.Moc5.env = mocBuilderEnv
-        env.XMoc5.env = xMocBuilderEnv
+        env.Moc6.env = mocBuilderEnv
+        env.XMoc6.env = xMocBuilderEnv
 
         # We return the set of source entries as sorted sequence, else
         # the order might accidentally change from one build to another
@@ -399,7 +399,7 @@ def _detect(env):
     try: return os.environ['QTDIR']
     except KeyError: pass
 
-    moc = env.WhereIs('moc-qt6') or env.WhereIs('moc5') or env.WhereIs('moc')
+    moc = env.WhereIs('moc-qt6') or env.WhereIs('moc6') or env.WhereIs('moc')
     if moc:
         pipes = subprocess.Popen('%s -v' % moc,
                                  shell=True, stdin=subprocess.PIPE,
@@ -410,7 +410,7 @@ def _detect(env):
         vernumber = mocver_re.match(vernumber)
         if vernumber:
             vernumber = [ int(x) for x in vernumber.groups() ]
-            if vernumber < [5, 0, 0]:
+            if vernumber < [6, 0, 0]:
                 vernumber = '.'.join([str(x) for x in vernumber])
                 moc = None
                 SCons.Warnings.warn(
@@ -596,7 +596,7 @@ __ex_uic_builder = SCons.Builder.Builder(
 #
 # Wrappers (pseudo-Builders)
 #
-def Ts5(env, target, source=None, *args, **kw):
+def Ts6(env, target, source=None, *args, **kw):
     """
     A pseudo-Builder wrapper around the LUPDATE executable of Qt6.
         lupdate [options] [source-file|path]... -ts ts-files
@@ -630,7 +630,7 @@ def Ts5(env, target, source=None, *args, **kw):
 
     return result
 
-def Qm5(env, target, source=None, *args, **kw):
+def Qm6(env, target, source=None, *args, **kw):
     """
     A pseudo-Builder wrapper around the LRELEASE executable of Qt6.
         lrelease [options] ts-files [-qm qm-file]
@@ -648,7 +648,7 @@ def Qm5(env, target, source=None, *args, **kw):
 
     return result
 
-def Qrc5(env, target, source=None, *args, **kw):
+def Qrc6(env, target, source=None, *args, **kw):
     """
     A pseudo-Builder wrapper around the RCC executable of Qt6.
         rcc [options] qrc-files -o out-file
@@ -666,7 +666,7 @@ def Qrc5(env, target, source=None, *args, **kw):
 
     return result
 
-def ExplicitMoc5(env, target, source, *args, **kw):
+def ExplicitMoc6(env, target, source, *args, **kw):
     """
     A pseudo-Builder wrapper around the MOC executable of Qt6.
         moc [options] <header-file>
@@ -683,7 +683,7 @@ def ExplicitMoc5(env, target, source, *args, **kw):
 
     return result
 
-def ExplicitUic5(env, target, source, *args, **kw):
+def ExplicitUic6(env, target, source, *args, **kw):
     """
     A pseudo-Builder wrapper around the UIC executable of Qt6.
         uic [options] <uifile>
@@ -705,20 +705,25 @@ def generate(env):
     suffixes = [
         '-qt6',
         '-qt6.exe',
-        '5',
-        '5.exe',
+        '6',
+        '6.exe',
         '',
         '.exe',
     ]
-    command_suffixes = ['-qt6', '5', '']
+
+    bin_dir_names = ['bin', 'libexec']
+
+    command_suffixes = ['-qt6', '6', '']
         
-    def locateQt6Command(env, command, qtdir) :
+    def locateQt6Command(env, command, qtdirs) :
         triedPaths = []
-        for suffix in suffixes :
-            fullpath = os.path.join(qtdir,'bin',command + suffix)
-            if os.access(fullpath, os.X_OK) :
-                return fullpath
-            triedPaths.append(fullpath)
+        for qtdir in qtdirs:
+            for bin_dir_name in bin_dir_names:
+                for suffix in suffixes :
+                    fullpath = os.path.join(qtdir, bin_dir_name, command + suffix)
+                    if os.access(fullpath, os.X_OK) :
+                        return fullpath
+                    triedPaths.append(fullpath)
 
         fullpath = env.Detect([command+s for s in command_suffixes])
         if not (fullpath is None) : return fullpath
@@ -730,17 +735,22 @@ def generate(env):
     Builder = SCons.Builder.Builder
 
     env['QT6DIR']  = _detect(env)
+
+    bin_dirs = [env['QT6DIR']]
+    if 'QT6BINDIR' in env:
+        print('appending QT6BINDIR')
+        bin_dirs.append(env['QT6BINDIR'])
+
     # TODO: 'Replace' should be 'SetDefault'
 #    env.SetDefault(
     env.Replace(
         QT6DIR  = _detect(env),
-        QT6_BINPATH = os.path.join('$QT6DIR', 'bin'),
         # TODO: This is not reliable to QT6DIR value changes but needed in order to support '-qt6' variants
-        QT6_MOC = locateQt6Command(env,'moc', env['QT6DIR']),
-        QT6_UIC = locateQt6Command(env,'uic', env['QT6DIR']),
-        QT6_RCC = locateQt6Command(env,'rcc', env['QT6DIR']),
-        QT6_LUPDATE = locateQt6Command(env,'lupdate', env['QT6DIR']),
-        QT6_LRELEASE = locateQt6Command(env,'lrelease', env['QT6DIR']),
+        QT6_MOC = locateQt6Command(env ,'moc', bin_dirs),
+        QT6_UIC = locateQt6Command(env ,'uic', bin_dirs),
+        QT6_RCC = locateQt6Command(env ,'rcc', bin_dirs),
+        QT6_LUPDATE = locateQt6Command(env, 'lupdate', bin_dirs),
+        QT6_LRELEASE = locateQt6Command(env, 'lrelease', bin_dirs),
 
         QT6_AUTOSCAN = 1, # Should the qt6 tool try to figure out, which sources are to be moc'ed?
         QT6_AUTOSCAN_STRATEGY = 0, # While scanning for files to moc, should we search for includes in qtsolutions style?
@@ -791,14 +801,14 @@ def generate(env):
                 
         )
 
-    env.AddMethod(Ts5, "Ts5")
-    env.AddMethod(Qm5, "Qm5")
-    env.AddMethod(Qrc5, "Qrc5")
-    env.AddMethod(ExplicitMoc5, "ExplicitMoc5")
-    env.AddMethod(ExplicitUic5, "ExplicitUic5")
+    env.AddMethod(Ts6, "Ts6")
+    env.AddMethod(Qm6, "Qm6")
+    env.AddMethod(Qrc6, "Qrc6")
+    env.AddMethod(ExplicitMoc6, "ExplicitMoc6")
+    env.AddMethod(ExplicitUic6, "ExplicitUic6")
 
     # Interface builder
-    uic5builder = Builder(
+    uic6builder = Builder(
         action = SCons.Action.Action('$QT6_UICCOM', '$QT6_UICCOMSTR'),
         src_suffix='$QT6_UISUFFIX',
         suffix='$QT6_UICDECLSUFFIX',
@@ -806,7 +816,7 @@ def generate(env):
         single_source = True
         #TODO: Consider the uiscanner on new scons version
         )
-    env['BUILDERS']['Uic5'] = uic5builder
+    env['BUILDERS']['Uic6'] = uic6builder
 
     # Metaobject builder
     mocBld = Builder(action={}, prefix={}, suffix={})
@@ -822,7 +832,7 @@ def generate(env):
         mocBld.add_action(cxx, act)
         mocBld.prefix[cxx] = '$QT6_MOCCXXPREFIX'
         mocBld.suffix[cxx] = '$QT6_MOCCXXSUFFIX'
-    env['BUILDERS']['Moc5'] = mocBld
+    env['BUILDERS']['Moc6'] = mocBld
 
     # Metaobject builder for the extended auto scan feature 
     # (Strategy #1 for qtsolutions)
@@ -839,9 +849,9 @@ def generate(env):
         xMocBld.add_action(cxx, act)
         xMocBld.prefix[cxx] = '$QT6_XMOCCXXPREFIX'
         xMocBld.suffix[cxx] = '$QT6_XMOCCXXSUFFIX'
-    env['BUILDERS']['XMoc5'] = xMocBld
+    env['BUILDERS']['XMoc6'] = xMocBld
 
-    # Add the Qrc5 action to the CXX file builder (registers the
+    # Add the Qrc6 action to the CXX file builder (registers the
     # *.qrc extension with the Environment)     
     cfile_builder, cxxfile_builder = SCons.Tool.createCFileBuilders(env)
     qrc_act = SCons.Action.CommandGeneratorAction(__qrc_generator,
@@ -861,9 +871,14 @@ def generate(env):
                     )
 
     # TODO: Does dbusxml2cpp need an adapter
-    env.AddMethod(enable_modules, "EnableQt6Modules")
+    import functools
+    em = functools.partial(enable_modules, crosscompiling = (('target' in env) and
+                                                             (env['PLATFORM'] == 'posix') and
+                                                             (env['target'] != 'posix')))
+    env.AddMethod(em, "EnableQt6Modules")
 
-def enable_modules(self, modules, debug=False, crosscompiling=False) :
+
+def enable_modules(self, modules, debug=False, crosscompiling = False) :
     import sys
 
     validModules = [
@@ -953,7 +968,7 @@ def enable_modules(self, modules, debug=False, crosscompiling=False) :
         self["QT6_MOCCPPPATH"] = self["CPPPATH"]
         return
     if sys.platform == "win32" or crosscompiling :
-        if crosscompiling:
+        if False and crosscompiling:
             transformedQtdir = transformToWinePath(self['QT6DIR'])
             self['QT6_MOC'] = "QT6DIR=%s %s"%( transformedQtdir, self['QT6_MOC'])
         self.AppendUnique(CPPPATH=[os.path.join("$QT6DIR","include")])
@@ -964,14 +979,14 @@ def enable_modules(self, modules, debug=False, crosscompiling=False) :
             self.AppendUnique(CPPPATH=[os.path.join("$QT6DIR","include","QtAssistant")])
             modules.remove("QtAssistant")
             modules.append("QtAssistantClient")
-        self.AppendUnique(LIBS=['qtmain'+debugSuffix])
+        #self.AppendUnique(LIBS=['qtmain'+debugSuffix])
         self.AppendUnique(LIBS=[lib.replace("Qt","Qt6")+debugSuffix for lib in modules if lib not in staticModules])
         self.PrependUnique(LIBS=[lib+debugSuffix for lib in modules if lib in staticModules])
         if 'QtOpenGL' in modules:
             self.AppendUnique(LIBS=['opengl32'])
-        self.AppendUnique(CPPPATH=[ '$QT6DIR/include/'])
-        self.AppendUnique(CPPPATH=[ '$QT6DIR/include/'+module for module in modules])
-        if crosscompiling :
+        self.AppendUnique(CPPPATH=[ '$QT6DIR/include/qt6'])
+        self.AppendUnique(CPPPATH=[ '$QT6DIR/include/qt6/'+module for module in modules])
+        if False :
             self["QT6_MOCCPPPATH"] = [
                 path.replace('$QT6DIR', transformedQtdir)
                     for path in self['CPPPATH'] ]

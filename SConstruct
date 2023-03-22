@@ -28,9 +28,11 @@ env.Append(CPATH = '.')
 if platform == 'posix' and target == 'posix':
     env.PrependENVPath('PATH', '/usr/lib64/qt6/libexec')
 
-
 elif platform == 'posix' and target == 'win64':
-    pass
+    env['CC'] = 'x86_64-w64-mingw32-gcc'
+    env['CXX'] = 'x86_64-w64-mingw32-g++'
+    env['QT6DIR'] = '/usr/x86_64-w64-mingw32/sys-root/mingw'
+    env['QT6BINDIR'] = '/usr/lib64/qt6'
 
 else:
     print(f'Don\'t know how to build target {target} on platform {platform}')
