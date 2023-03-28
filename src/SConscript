@@ -1,11 +1,24 @@
 # Copyright 2023 Eric Smith
 # SPDX-License-Identifier: GPL-3.0-only
 
+import SCons
+
 Import('env')
+
+def find_file(filename, pathnames):
+    paths = [env.Dir(pathname) for pathname in pathnames]
+    return SCons.Node.FS.find_file(filename, paths)
+
+
+
 env.Append(CXXFLAGS = ['-g', '--std=c++20'])
 
-env.Tool('qt6', toolpath = '.')
-env.Tool('otf_to_c', toolpath = '.')
+local_tools = ['qt6', 'otf_to_c']
+if env['target'] in ('win32', 'win64'):
+    local_tools += ['wxs', 'msi']
+for lt in local_tools:
+    env.Tool(lt, toolpath = ['.'])
+
 
 env.EnableQt6Modules(['QtCore',
                       'QtGui',
@@ -31,4 +44,39 @@ SOURCES = [font_c,
 	   'lcd_registers.cpp',
 	   'lcd_mapper.cpp']
 
-env.Program('voyager-lcd', SOURCES)
+executable = env.Program('voyager-lcd', SOURCES)[0]
+
+if env['target'] in ('win32', 'win64'):
+    wxs_template = env.File('voyager-lcd.wxst')
+
+    dll_names = ['Qt6Core',
+                 'Qt6Gui',
+                 'Qt6Widgets',
+                 'libstdc++-6',
+                 'libwinpthread-1',
+                 'icui18n71',
+                 'icuuc71',
+                 'icudata71',
+                 'libpcre2-16-0',
+                 'libpcre2-8-0',
+                 'libssp-0',
+                 'zlib1',
+                 'libfreetype-6',
+                 'libharfbuzz-0',
+                 'libpng16-16',
+                 'libbz2-1',
+                 'libglib-2.0-0',
+                 'libintl-8',
+                 'iconv',
+                 'qwindows'
+                 ]
+
+    if env['target'] == 'win32':
+        dll_names.append('libgcc_s_dw2-1')
+    elif env['target'] == 'win64':
+        dll_names.append('libgcc_s_seh-1')
+
+    dlls = [find_file(dll_name + '.dll', env['DLLPATH']) for dll_name in dll_names]
+    files = [executable] + dlls
+    wxs = env.WXS('voyager-lcd.wxs', [wxs_template, files])
+    env.MSI(wxs)

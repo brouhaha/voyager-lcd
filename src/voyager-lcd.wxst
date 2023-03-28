@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!--
+Copyright 2023 Eric Smith
+SPDX-License-Identifier: GPL-3.0-only
+-->
+
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+  <Product Name='voyager-lcd'
+	   Manufacturer='Frobco'
+  	   Id='72efd2b1-2830-48e0-8599-4f79761221d6'
+	   UpgradeCode='bccc715a-e7a7-4811-8fb5-da783dada945'
+	   Language='1033'
+	   Codepage='1252'
+	   Version='1.0.0'>
+
+    <Package Id='*'
+    	     Keywords='Installer'
+	     Description="Frobco Voyager-LCD Installer"
+	     Comments='no comment'
+	     Manufacturer='Frobco'
+	     InstallerVersion='100'
+	     Languages='1033'
+	     SummaryCodepage='1252'
+	     Compressed='yes' />
+
+    <Media Id='1'
+    	   Cabinet='vlcd.cab'
+	   EmbedCab='yes'
+	   DiskPrompt="CD-ROM #1" />
+    <Property Id='DiskPrompt'
+    	      Value="Frobco Voyager-LCD Installation [1]" />
+
+    <Directory Id='TARGETDIR' Name='SourceDir'>
+      <Directory Id='ProgramFilesFolder' Name='PFiles'>
+        <Directory Id='INSTALLDIR' Name='Voyager-LCD'>
+	  <Directory Id='qt-platforms-dir' Name='platforms'/>
+        </Directory>
+      </Directory>
+      <Directory Id="ProgramMenuFolder" Name="Programs"/>
+    </Directory>
+
+    <DirectoryRef Id="INSTALLDIR">
+    </DirectoryRef>
+
+    <DirectoryRef Id="qt-platforms-dir">
+    </DirectoryRef>
+
+    <DirectoryRef Id="ProgramMenuFolder">
+      <Component Id="ApplicationShortcut" Guid="8f31baac-5495-4439-be06-d7fce5848d5d">
+	<Shortcut Id="ApplicationStartMenuShortcut"
+		  Name="Voyager-LCD"
+		  Description="Voyager calculator LCD segment editor"
+		  Target="[#voyager-lcd.exe]"
+		  WorkingDirectory="INSTALLDIR"/>
+	<RemoveFolder Id="ApplicationProgramsFolder"
+		      On="uninstall"/>
+	<RegistryKey Root="HKCU"
+		     Key="Software\Frobco\Voyager-LCD">
+	  <RegistryValue Name="installed"
+			 Type="integer"
+			 Value="1"
+			 KeyPath="yes"/>
+	</RegistryKey>
+      </Component>
+    </DirectoryRef>
+
+    <Feature Id='Complete'
+    	     Level='1'>
+      <ComponentRef Id="ApplicationShortcut"/>
+    </Feature>
+
+  </Product>
+</Wix>

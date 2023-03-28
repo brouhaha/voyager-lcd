@@ -23,7 +23,7 @@ bitmaps. This program presents an approximate graphical representation of
 the LCD. Segments can be toggled with a mouse clock, and the corresponding
 control register values are displayed in hexadecimal.
 
-## Building from source
+## Building from source on Linux
 
 The program builds on Linux or Posix systems, and requires C++20 , Qt
 6, Python 3, and SCons 4. It has been (only slightly) tested on Fedora
@@ -33,8 +33,27 @@ To build:
 
 - `scons`
 
-The resulting executable will be build/posix/voyager-lcd. The executable may be
-installed simply by copying it into any desired directory.
+or, after building any other target (e.g., win32):
+
+- `scons target=posix`
+
+The resulting executable will be `build/posix/voyager-lcd`.
+The executable may be installed simply by copying it into any desired
+directory.
+
+## Cross-compiling for Windows on a Linux host
+
+Cross-compiling for Windows requires a mingw32 cross-compilation toolchain,
+cross-development Qt packages, and msitools. On Fedora 37, install the
+required packages by:
+
+- `sudo dnf install mingw32-g++ mingw32-qt6-qtbase msitools`
+
+To build:
+
+- `scons target=win32`
+
+The resuling MSI installation package will be `build/win32/voyager-lcd.msi`.
 
 ## License
 

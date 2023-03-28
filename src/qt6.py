@@ -1,4 +1,5 @@
 # Modified for Qt 6 by Eric Smith, 2022-11-07
+# Modified for Linux to Windows cross-compilation by Eric Smith, 2023-03-21
 # SPDX-License-Identifier: MIT
 
 """SCons.Tool.qt
