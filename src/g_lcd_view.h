@@ -5,7 +5,6 @@
 #define G_LCD_VIEW_H
 
 #include <QGraphicsView>
-#include <QResizeEvent>
 
 #include "lcd.h"
 #include "g_lcd.h"
@@ -22,6 +21,7 @@ public:
 
 protected:
   void resizeEvent(QResizeEvent *event) override;
+  void paintEvent(QPaintEvent *event) override;
 
 private:
   LCD* lcd;

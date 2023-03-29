@@ -25,7 +25,7 @@ G_LCD_View::G_LCD_View(LCD* lcd,
 
 QSize G_LCD_View::sizeHint() const
 {
-  return QSize(800, 300);
+  return QSize(800, 200);
 }
 
 // https://stackoverflow.com/questions/10891962/how-to-fit-qgraphicsscene-in-a-qgraphicsview
@@ -37,4 +37,22 @@ void G_LCD_View::zoomToFit()
 void G_LCD_View::resizeEvent(QResizeEvent *event)
 {
   zoomToFit();
+  QGraphicsView::resizeEvent(event);
 }
+
+void G_LCD_View::paintEvent(QPaintEvent *event)
+{
+  // On Linux, just overriding resizeEvent to call zoomToFit is sufficient
+  // that the view is sized appropriately at startup. On Windows, that
+  // doesn't work, and explicitly calling zoomToFit in the constructor,
+  // or various other places, doesn't work. Doing it on the first paint
+  // event does the job.
+  static bool first_time = true;
+  if (first_time)
+  {
+    first_time = false;
+    zoomToFit();
+  }
+  QGraphicsView::paintEvent(event);
+}
+
