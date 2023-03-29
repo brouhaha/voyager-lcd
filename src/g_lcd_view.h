@@ -18,6 +18,8 @@ public:
 
   void zoomToFit();
 
+  QSize sizeHint() const override;
+
 protected:
   void resizeEvent(QResizeEvent *event) override;
 

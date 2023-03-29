@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-only
 
 #include <QGraphicsScene>
+#include <QSizePolicy>
 
 #include "g_lcd_view.h"
 
@@ -11,6 +12,8 @@ G_LCD_View::G_LCD_View(LCD* lcd,
   lcd(lcd),
   g_lcd(new G_LCD())
 {
+  setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+
   scene()->addItem(g_lcd);
 
   connect(g_lcd, &G_LCD::lcd_segment_state_changed,
@@ -18,6 +21,11 @@ G_LCD_View::G_LCD_View(LCD* lcd,
 
   connect(lcd,   &LCD::lcd_segment_state_changed,
 	  g_lcd, &G_LCD::lcd_segment_state_changed_in);
+}
+
+QSize G_LCD_View::sizeHint() const
+{
+  return QSize(800, 300);
 }
 
 // https://stackoverflow.com/questions/10891962/how-to-fit-qgraphicsscene-in-a-qgraphicsview
