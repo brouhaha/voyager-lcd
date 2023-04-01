@@ -1,8 +1,6 @@
 // Copyright 2023 Eric Smith
 // SPDX-License-Identifier: GPL-3.0-only
 
-#include <iostream>
-
 #include <QAction>
 #include <QApplication>
 #include <QMenu>
@@ -42,6 +40,7 @@ void Main_Window::create_edit_menu()
 {
   QMenu *editMenu = menuBar()->addMenu(tr("&Edit"));
 
+#if 0
   QAction *cutAction = editMenu->addAction(tr("Cu&t"));
   cutAction->setShortcuts(QKeySequence::Cut);
   cutAction->setStatusTip(tr("Cut the selection to the clipboard"));
@@ -63,6 +62,7 @@ void Main_Window::create_edit_menu()
   selectAllAction->setShortcuts(QKeySequence::SelectAll);
   selectAllAction->setStatusTip(tr("Select all"));
   connect(selectAllAction, &QAction::triggered, this, &Main_Window::selectAll);
+#endif
 }
 
 
@@ -88,7 +88,18 @@ void Main_Window::cut()
   QLineEdit* line_edit = dynamic_cast<QLineEdit *>(widget);
   if (line_edit)
   {
-    std::cout << "QLineEdit::cut()\n";
+    // The following should normally be emitted as a signal, not a direct
+    // method call. However, we have to emit the signal to only the focused
+    // object, so we can't keep connections open permanently. Rather than
+    // constantly connecting and disconnecting, we could use
+    // QMetaObject::invokeMethod() with Qt::QueuedConnection or
+    // Qt::QAutoConnection.
+    // However, since this is for activation of a menu item or keyboard
+    // shortcut, we should already be in the GUI thread, so callint the
+    // widget directly should be OK.
+    // See:
+    //   https://stackoverflow.com/questions/3297456/invoke-slot-method-without-connection
+    // and the QMetaObject docuemntation.
     line_edit->cut();
     return;
   }
@@ -105,7 +116,7 @@ void Main_Window::copy()
   QLineEdit* line_edit = dynamic_cast<QLineEdit *>(widget);
   if (line_edit)
   {
-    std::cout << "QLineEdit::copy()\n";
+    // See comments in the cut method above.
     line_edit->copy();
     return;
   }
@@ -122,7 +133,7 @@ void Main_Window::paste()
   QLineEdit* line_edit = dynamic_cast<QLineEdit *>(widget);
   if (line_edit)
   {
-    std::cout << "QLineEdit::paste()\n";
+    // See comments in the cut method above.
     line_edit->paste();
     return;
   }
@@ -139,7 +150,7 @@ void Main_Window::selectAll()
   QLineEdit* line_edit = dynamic_cast<QLineEdit *>(widget);
   if (line_edit)
   {
-    std::cout << "QLineEdit::selectAll()\n";
+    // See comments in the cut method above.
     line_edit->selectAll();
     return;
   }
