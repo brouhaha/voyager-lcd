@@ -1,6 +1,9 @@
 // Copyright 2023 Eric Smith
 // SPDX-License-Identifier: GPL-3.0-only
 
+#ifndef G_REGISTERS_H
+#define G_REGISTERS_H
+
 #include <QWidget>
 
 #include "lcd_registers.h"
@@ -19,3 +22,5 @@ private:
   LCD_Registers* lcd_registers;
   G_Hex_Line_Edit *hle[LCD_Registers::REG_MAX];
 };
+
+#endif // G_REGISTERS_H

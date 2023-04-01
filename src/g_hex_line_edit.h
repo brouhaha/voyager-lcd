@@ -1,6 +1,9 @@
 // Copyright 2023 Eric Smith
 // SPDX-License-Identifier: GPL-3.0-only
 
+#ifndef G_HEX_LINE_EDIT_H
+#define G_HEX_LINE_EDIT_H
+
 #include <string>
 
 #include <QLineEdit>
@@ -27,3 +30,5 @@ private:
   uint64_t data;
   std::string s;
 };
+
+#endif // G_HEX_LINE_EDIT_H
