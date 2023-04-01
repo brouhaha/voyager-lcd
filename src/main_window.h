@@ -24,9 +24,16 @@ protected:
 private slots:
   void about();
 
+  void cut();
+  void copy();
+  void paste();
+  void selectAll();
+
 private:
   Central_Widget* central_widget;
+
+  void create_file_menu();
+  void create_edit_menu();
 };
 
 #endif // MAIN_WINDOW_H
-
