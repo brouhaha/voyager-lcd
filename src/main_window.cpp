@@ -40,7 +40,6 @@ void Main_Window::create_edit_menu()
 {
   QMenu *editMenu = menuBar()->addMenu(tr("&Edit"));
 
-#if 0
   QAction *cutAction = editMenu->addAction(tr("Cu&t"));
   cutAction->setShortcuts(QKeySequence::Cut);
   cutAction->setStatusTip(tr("Cut the selection to the clipboard"));
@@ -62,7 +61,6 @@ void Main_Window::create_edit_menu()
   selectAllAction->setShortcuts(QKeySequence::SelectAll);
   selectAllAction->setStatusTip(tr("Select all"));
   connect(selectAllAction, &QAction::triggered, this, &Main_Window::selectAll);
-#endif
 }
 
 
