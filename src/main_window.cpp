@@ -1,22 +1,29 @@
 // Copyright 2023 Eric Smith
 // SPDX-License-Identifier: GPL-3.0-only
 
+#include <iostream>
+
 #include <QAction>
 #include <QApplication>
 #include <QMenu>
 #include <QMenuBar>
 #include <QMessageBox>
 
+#include "central_widget.h"
 #include "main_window.h"
 
 Main_Window::Main_Window(LCD *lcd,
 			 LCD_Registers *lcd_registers):
-  central_widget(new Central_Widget(lcd, lcd_registers, this))
+  central_widget(new Central_Widget(this,  // Main_Window*
+				    lcd,
+				    lcd_registers,
+				    this)) // parent: QWidget*
 {
   setCentralWidget(central_widget);
 
   create_file_menu();
   create_edit_menu();
+  create_view_menu();
 }
 
     
@@ -64,6 +71,16 @@ void Main_Window::create_edit_menu()
 }
 
 
+void Main_Window::create_view_menu()
+{
+  QMenu *viewMenu = menuBar()->addMenu(tr("&View"));
+
+  userCodeAction = viewMenu->addAction(tr("&User code"));
+  userCodeAction->setCheckable(true);
+  connect(userCodeAction, &QAction::triggered, this, &Main_Window::action_view_user_code);
+}
+
+
 void Main_Window::closeEvent(QCloseEvent *event)
 {
 }
@@ -74,6 +91,24 @@ void Main_Window::about()
 		     tr("About voyager-lcd"),
 		     tr("A program to compose data words for HP Voyager calculator LCD displays."));
 }
+
+
+void Main_Window::action_view_user_code()
+{
+  bool new_state = userCodeAction->isChecked();
+  if (new_state == state_view_user_code)
+    return;
+
+  state_view_user_code = new_state;
+
+  if (state_view_user_code)
+    std::cout << "show user code\n";
+  else
+    std::cout << "hide user code\n";
+
+  emit view_user_code(state_view_user_code);
+}
+
 
 void Main_Window::cut()
 {
@@ -101,6 +136,13 @@ void Main_Window::cut()
     line_edit->cut();
     return;
   }
+
+  QTextEdit* text_edit = dynamic_cast<QTextEdit *>(widget);
+  if (text_edit)
+  {
+    text_edit->cut();
+    return;
+  }
 }
 
 void Main_Window::copy()
@@ -116,6 +158,13 @@ void Main_Window::copy()
   {
     // See comments in the cut method above.
     line_edit->copy();
+    return;
+  }
+
+  QTextEdit* text_edit = dynamic_cast<QTextEdit *>(widget);
+  if (text_edit)
+  {
+    text_edit->copy();
     return;
   }
 }
@@ -135,6 +184,13 @@ void Main_Window::paste()
     line_edit->paste();
     return;
   }
+
+  QTextEdit* text_edit = dynamic_cast<QTextEdit *>(widget);
+  if (text_edit)
+  {
+    text_edit->paste();
+    return;
+  }
 }
 
 void Main_Window::selectAll()
@@ -150,6 +206,13 @@ void Main_Window::selectAll()
   {
     // See comments in the cut method above.
     line_edit->selectAll();
+    return;
+  }
+
+  QTextEdit* text_edit = dynamic_cast<QTextEdit *>(widget);
+  if (text_edit)
+  {
+    text_edit->selectAll();
     return;
   }
 }

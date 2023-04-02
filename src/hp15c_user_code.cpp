@@ -397,6 +397,11 @@ void HP15C_User_Code::build_table()
   }
 }
 
+bool HP15C_User_Code::is_prefix(uint8_t byte)
+{
+  return (byte & 0x0f) == 0x0f;
+}
+
 std::string HP15C_User_Code::lookup(uint8_t single_byte)
 {
   uint16_t key = single_byte;

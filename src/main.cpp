@@ -16,8 +16,8 @@ int main(int argc, char *argv[])
   LCD_Registers lcd_registers;
   LCD_Mapper lcd_mapper(&lcd, &lcd_registers);
 
-  Main_Window main_window(&lcd, &lcd_registers);
+  Main_Window* main_window = new Main_Window(&lcd, &lcd_registers);
 
-  main_window.show();
+  main_window->show();
   return app.exec();
 }

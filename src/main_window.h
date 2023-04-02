@@ -8,7 +8,8 @@
 
 #include "lcd.h"
 #include "lcd_registers.h"
-#include "central_widget.h"
+
+class Central_Widget;
 
 class Main_Window : public QMainWindow
 {
@@ -17,6 +18,9 @@ class Main_Window : public QMainWindow
 public:
   Main_Window(LCD *lcd,
 	      LCD_Registers *lcd_registers);
+
+signals:
+  void view_user_code(bool enable);
 
 protected:
   void closeEvent(QCloseEvent *event) override;
@@ -29,11 +33,17 @@ private slots:
   void paste();
   void selectAll();
 
+  void action_view_user_code();
+
 private:
   Central_Widget* central_widget;
 
+  QAction* userCodeAction;
+  bool state_view_user_code = false;
+
   void create_file_menu();
   void create_edit_menu();
+  void create_view_menu();
 };
 
 #endif // MAIN_WINDOW_H

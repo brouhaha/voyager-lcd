@@ -39,10 +39,15 @@ SOURCES = [font_c,
            'g_lcd_segment.cpp',
            'g_lcd_view.cpp',
 	   'g_registers.cpp',
+	   'g_user_code.cpp',
 
 	   'lcd.cpp',
 	   'lcd_registers.cpp',
-	   'lcd_mapper.cpp']
+	   'lcd_mapper.cpp',
+
+	   'hp15c_user_code.cpp'
+]
+
 
 executable = env.Program('voyager-lcd', SOURCES)[0]
 

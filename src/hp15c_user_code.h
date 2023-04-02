@@ -20,6 +20,8 @@ class HP15C_User_Code
   
   static HP15C_User_Code* get_instance();
 
+  static bool is_prefix(uint8_t byte);
+
   static std::string lookup(uint8_t single_byte);
 
   static std::string lookup(uint8_t first_byte, uint8_t second_byte);

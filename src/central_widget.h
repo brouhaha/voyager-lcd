@@ -10,11 +10,14 @@
 #include "g_lcd_view.h"
 #include "g_registers.h"
 
+class Main_Window;
+
 class Central_Widget : public QWidget
 {
 public:
-  Central_Widget(LCD* lcd,
-		 LCD_Registers *lcd_registers,
+  Central_Widget(Main_Window* main_window,
+		 LCD* lcd,
+		 LCD_Registers* lcd_registers,
 		 QWidget* parent = nullptr,
 		 Qt::WindowFlags f = Qt::WindowFlags());
 
