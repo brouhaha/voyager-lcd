@@ -1,7 +1,6 @@
 // Copyright 2023 Eric Smith
 // SPDX-License-Identifier: GPL-3.0-only
 
-#include <iostream>
 #include <unordered_map>
 
 #include "lcd_mapper.h"
@@ -279,6 +278,8 @@ LCD_Mapper::LCD_Mapper(LCD* lcd,
 
   connect(this,          &LCD_Mapper::lcd_register_set_bit,
 	  lcd_registers, &LCD_Registers::set_bit);
+  connect(this,          &LCD_Mapper::set_segment,
+	  lcd,           &LCD::set_segment);
 }
 
 
@@ -303,5 +304,17 @@ void LCD_Mapper::lcd_segment_state_changed(LCD::Segment segment, bool new_state)
 
 void LCD_Mapper::lcd_register_word_changed(int register_number, uint64_t old_word, uint64_t new_word)
 {
-  // std::cout << "mapper: received lcd_register_word_changed(" << register_number << ", " << old_word << ", " << new_word << ")\n";
+  for (int bit_number = 0; bit_number < 56; bit_number++)
+  {
+    bool old_bit = (old_word >> bit_number) & 1;
+    bool new_bit = (new_word >> bit_number) & 1;
+    if (new_bit != old_bit)
+    {
+      LCD_Registers::Bit bit(register_number, bit_number);
+      if (bit_to_segment[map_type].contains(bit))
+      {
+	emit set_segment(bit_to_segment[map_type][bit], new_bit);
+      }
+    }
+  }
 }
