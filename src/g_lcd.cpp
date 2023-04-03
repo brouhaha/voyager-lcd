@@ -1,8 +1,6 @@
 // Copyright 2023 Eric Smith
 // SPDX-License-Identifier: GPL-3.0-only
 
-#include <iostream>
-
 #include <QByteArray>
 #include <QFontDatabase>
 #include <QGraphicsLinearLayout>
@@ -13,10 +11,10 @@
 
 static const std::string font_name = "Aileron-Bold";
 
-static QByteArray Aileron_Bold_bytes((const char *) Aileron_Bold_otf, sizeof(Aileron_Bold_otf));
+static QByteArray Aileron_Bold_bytes((const char*) Aileron_Bold_otf, sizeof(Aileron_Bold_otf));
 
 
-G_LCD::G_LCD(QGraphicsItem *parent,
+G_LCD::G_LCD(QGraphicsItem* parent,
 	     Qt::WindowFlags wFlags):
   QGraphicsWidget(parent, wFlags),
   digits_layout(new QGraphicsLinearLayout(Qt::Horizontal)),
@@ -85,6 +83,7 @@ bool G_LCD::get_segment(int digit, int segment)
   return this->digit[digit]->get_segment(segment);
 }
 
+// from G_LCD_Digit
 void G_LCD::digit_segment_state_changed_in(int digit, int segment, bool new_state)
 {
   if (digit == LCD::DIGIT_MAX)
@@ -99,6 +98,7 @@ void G_LCD::digit_segment_state_changed_in(int digit, int segment, bool new_stat
   }
 }
 
+// from G_LCD_Segment
 void G_LCD::annunciator_state_changed_in(int annunciator, bool new_state)
 {
   // negative is handled as a digit
@@ -106,6 +106,7 @@ void G_LCD::annunciator_state_changed_in(int annunciator, bool new_state)
   emit lcd_segment_state_changed(s, new_state);
 }
 
+// from LCD
 void G_LCD::lcd_segment_state_changed_in(LCD::Segment segment, bool new_state)
 {
   if (segment.digit == LCD::DIGIT_ANNUNCIATOR)
