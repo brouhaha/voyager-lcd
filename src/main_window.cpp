@@ -117,11 +117,6 @@ void Main_Window::action_view_user_code()
 
   state_view_user_code = new_state;
 
-  if (state_view_user_code)
-    std::cout << "show user code\n";
-  else
-    std::cout << "hide user code\n";
-
   emit view_user_code(state_view_user_code);
 }
 
