@@ -59,9 +59,9 @@ if env['target'] in ('win32', 'win64'):
                  'Qt6Widgets',
                  'libstdc++-6',
                  'libwinpthread-1',
-                 'icui18n71',
-                 'icuuc71',
-                 'icudata71',
+                 'icui18n73',
+                 'icuuc73',
+                 'icudata73',
                  'libpcre2-16-0',
                  'libpcre2-8-0',
                  'libssp-0',
@@ -73,15 +73,23 @@ if env['target'] in ('win32', 'win64'):
                  'libglib-2.0-0',
                  'libintl-8',
                  'iconv',
-                 'qwindows'
+                 'qwindows',
+		 'libfontconfig-1',
+		 'libexpat-1',
                  ]
 
     if env['target'] == 'win32':
         dll_names.append('libgcc_s_dw2-1')
+        dll_names.append('libcrypto-3')
     elif env['target'] == 'win64':
         dll_names.append('libgcc_s_seh-1')
+        dll_names.append('libcrypto-3-x64')
 
     dlls = [find_file(dll_name + '.dll', env['DLLPATH']) for dll_name in dll_names]
+    if False:
+        for dll in dlls:
+    	    print(f'{dll.name=}')
+
     files = [executable] + dlls
     wxs = env.WXS('voyager-lcd.wxs', [wxs_template, files])
     env.MSI(wxs)
