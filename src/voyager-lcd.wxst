@@ -7,11 +7,13 @@ SPDX-License-Identifier: GPL-3.0-only
 <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
   <Product Name='voyager-lcd'
 	   Manufacturer='Frobco'
-  	   Id='72efd2b1-2830-48e0-8599-4f79761221d6'
+	   Id="*"
 	   UpgradeCode='bccc715a-e7a7-4811-8fb5-da783dada945'
 	   Language='1033'
 	   Codepage='1252'
-	   Version='1.3.0'>
+	   Version='1.5.0'>
+
+    <MajorUpgrade DowngradeErroMessage="A newer version of [ProductName] is already installed."/>
 
     <Package Id='*'
     	     Keywords='Installer'
