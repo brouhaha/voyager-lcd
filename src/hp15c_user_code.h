@@ -4,6 +4,7 @@
 #ifndef HP15C_USER_CODE_H
 #define HP15C_USER_CODE_H
 
+#include <cstdint>
 #include <map>
 #include <ostream>
 #include <string>
